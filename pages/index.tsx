@@ -6,14 +6,9 @@ import BillTable from "../components/BillTable";
 import SearchForm from "../components/SearchForm";
 
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContentText from "@mui/material/DialogContentText";
-import TextField from "@mui/material/TextField";
 
 import getMonth from "date-fns/getMonth";
+import NewBillDialog from "../components/NewBillDialog";
 
 export default function Home() {
   const [bill, setBill] = useState<
@@ -110,6 +105,11 @@ export default function Home() {
     closeBillDialog();
   }
 
+  function createNewBill(bill: Bill) {
+    setBill((it) => [...it, bill]);
+    closeBillDialog();
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -136,28 +136,12 @@ export default function Home() {
           <BillTable data={bill} categories={categories} />
         </section>
 
-        <Dialog open={open}>
-          <DialogTitle>New Bill</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              To subscribe to this website, please enter your email address
-              here. We will send updates occasionally.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Email Address"
-              type="email"
-              fullWidth
-              variant="standard"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={discardNewBill}>Cancel</Button>
-            <Button onClick={() => {}}>Subscribe</Button>
-          </DialogActions>
-        </Dialog>
+        <NewBillDialog
+          open={open}
+          categories={categories}
+          onDiscard={discardNewBill}
+          onCreate={createNewBill}
+        />
 
         <Button sx={{ marginTop: 1 }} onClick={openBillDialog}>
           Adding bill

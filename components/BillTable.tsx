@@ -1,6 +1,9 @@
+import { useState } from "react";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -18,7 +21,35 @@ export const typeHash = {
   1: "收入",
 };
 
+const sorts: readonly [undefined, "asc", "desc"] = [
+  undefined,
+  "asc",
+  "desc",
+] as const;
+
 function BillTable({ data, categories }: BillTableProps) {
+  const [amountSortVal, setAmountSortVal] = useState(0);
+
+  function amountSort() {
+    console.log("Sort by amount");
+    setAmountSortVal((amountSortVal) => (amountSortVal + 1) % 3);
+  }
+
+  function getSorted() {
+    const sortVal = sorts[amountSortVal];
+    if (sortVal === undefined) {
+      return data;
+    }
+
+    return [...data].sort((a, b) => {
+      if (sortVal === "asc") {
+        return a.amount - b.amount;
+      } else {
+        return b.amount - a.amount;
+      }
+    });
+  }
+
   return (
     <TableContainer
       sx={{ width: 800, maxHeight: 500, marginTop: 1 }}
@@ -30,11 +61,19 @@ function BillTable({ data, categories }: BillTableProps) {
             <TableCell>Type</TableCell>
             <TableCell align="right">Time</TableCell>
             <TableCell align="right">Category</TableCell>
-            <TableCell align="right">Amount</TableCell>
+            <TableCell align="right">
+              <TableSortLabel
+                active={!!sorts[amountSortVal]}
+                direction={sorts[amountSortVal]}
+                onClick={amountSort}
+              >
+                Amount
+              </TableSortLabel>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
+          {[...getSorted()].map((row) => (
             <TableRow key={JSON.stringify(row)}>
               <TableCell
                 align="right"

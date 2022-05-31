@@ -3,7 +3,8 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormGroup from "@mui/material/FormGroup";
-import TableFooter from "@mui/material/TableFooter";
+
+import { genMonthes } from "../common/utils";
 
 export type BillTableProps = {
   categories: Array<Category>;
@@ -11,10 +12,6 @@ export type BillTableProps = {
   onCategoryChange: (category: string) => void;
   onMonthChange: (month: string) => void;
 };
-
-function genMonthes() {
-  return new Array(12).fill(undefined).map((_, i) => i + 1);
-}
 
 function SearchForm({
   categories,
